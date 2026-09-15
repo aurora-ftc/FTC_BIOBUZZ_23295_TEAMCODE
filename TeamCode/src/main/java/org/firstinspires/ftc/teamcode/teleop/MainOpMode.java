@@ -4,14 +4,16 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.subsystems.Drive;
+
 @TeleOp(name="MainOpMode")
 public class MainOpMode extends OpMode {
-    DcMotor motor;
+    Drive drive;
 
     @Override
     public void init() {
-        motor = hardwareMap.get(DcMotor.class, "motor");
-        // runs once
+        drive = new Drive();
+        drive.init(hardwareMap);
     }
 
     @Override
@@ -28,12 +30,10 @@ public class MainOpMode extends OpMode {
 
     @Override
     public void loop() {
-        // runs in a loop
-        if (gamepad1.a) {
-            motor.setPower(0.5);
-        } else {
-            motor.setPower(0);
-        }
-        telemetry.addData("Motor Power", motor.getPower());
+        double forward = -gamepad1.left_stick_y;
+        double strafe = gamepad1.left_stick_x;
+        double yaw = gamepad1.right_stick_x;
+
+        drive.drive(forward, strafe, yaw);
     }
 }
