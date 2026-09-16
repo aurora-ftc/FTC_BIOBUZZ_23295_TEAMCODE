@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,19 +20,20 @@ public class Drive {
 
         brMotor.setDirection(DcMotorEx.Direction.REVERSE);
         blMotor.setDirection(DcMotorEx.Direction.REVERSE);
+
+        flMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior);
     }
 
     public void drive(double forward, double strafe, double rotate) {
         double flPower = forward + strafe + rotate;
-        double flPower = forward + strafe + rotate;
-        double flPower = forward + strafe + rotate;
-        double flPower = forward + strafe + rotate;
+        double frPower = forward + strafe + rotate;
+        double blPower = forward + strafe + rotate;
+        double brPower = forward + strafe + rotate;
 
-        double maxPower = Math.max(//all that stuff)
+        double maxPower = 1.0;
+        maxPower = Math.max(brPower, Math.max(blPower, Math.max(flPower, frPower)));
 
-        //Divide all by maxPower
-
-        //Set Power
+        flMotor.setPower(flPower / maxPower);
     }
 
 }
