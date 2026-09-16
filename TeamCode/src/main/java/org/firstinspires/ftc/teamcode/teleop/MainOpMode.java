@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 
 @TeleOp(name="MainOpMode")
@@ -32,8 +33,13 @@ public class MainOpMode extends OpMode {
     public void loop() {
         double forward = -gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x;
-        double yaw = gamepad1.right_stick_x;
+        double rotate = gamepad1.right_stick_x;
 
-        drive.drive(forward, strafe, yaw);
+        drive.drive(forward, strafe, rotate);
+
+        telemetry.addData("Forward", forward);
+        telemetry.addData("Strafe", strafe);
+        telemetry.addData("Rotate", rotate);
     }
+
 }
