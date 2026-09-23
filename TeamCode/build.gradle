@@ -1,4 +1,22 @@
+buildscript {
+    repositories {
+        mavenCentral()
+//        jcenter()
+        maven {
+            url 'https://maven.google.com'
+        }
+        maven {
+            url "https://repo.dairy.foundation/releases"
+        }
+    }
+    dependencies {
+        classpath "dev.frozenmilk:Load:0.3.2"
+    }
+}
+
 apply plugin: 'com.android.application'
+// there should be 2 or 3 more lines that start with 'apply plugin:' here
+apply plugin: 'dev.frozenmilk.sinister.sloth.load'
 
 //
 // build.gradle in TeamCode
@@ -19,11 +37,45 @@ apply from: '../build.dependencies.gradle'
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
+    compileSdk 35
+    defaultConfig {
+        minSdk 24
+    }
+
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
 }
 
+repositories {
+    // Dairy releases repository
+    maven {
+        url = "https://repo.dairy.foundation/releases"
+    }
+    // Dairy snapshots repository
+    maven {
+        url = "https://repo.dairy.foundation/snapshots"
+    }
+}
+
 dependencies {
     implementation project(':FtcRobotController')
+    implementation "org.solverslib:core:0.3.5" // core
+    implementation "org.solverslib:pedroPathing:0.3.5" // pedroPathing
+    implementation("dev.frozenmilk.dairy:Core:2.2.4")
+    implementation("dev.frozenmilk.dairy:Pasteurized:1.0.0")
+    implementation("dev.frozenmilk.dairy:Util:1.3.0")
 }
+
+dependencies {
+    implementation("dev.frozenmilk.sinister:Sloth:0.3.1")
+
+    implementation "com.bylazar:panels:1.0.5"
+}
+
+repositories {
+    maven {
+        url "https://repo.dairy.foundation/releases"
+    }
+}
+
