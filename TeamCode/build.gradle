@@ -62,15 +62,10 @@ dependencies {
     implementation project(':FtcRobotController')
     implementation "org.solverslib:core:0.3.5" // core
     implementation "org.solverslib:pedroPathing:0.3.5" // pedroPathing
-    implementation("dev.frozenmilk.dairy:Core:2.2.4")
-    implementation("dev.frozenmilk.dairy:Pasteurized:1.0.0")
-    implementation("dev.frozenmilk.dairy:Util:1.3.0")
-}
 
-dependencies {
     implementation("dev.frozenmilk.sinister:Sloth:0.3.1")
 
-    implementation "com.bylazar:panels:1.0.5"
+    implementation "com.bylazar:fullpanels:1.0.5"
 }
 
 repositories {

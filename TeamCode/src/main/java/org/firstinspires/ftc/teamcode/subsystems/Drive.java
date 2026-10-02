@@ -7,9 +7,9 @@ import org.firstinspires.ftc.teamcode.util.DcMotorGroup;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import dev.frozenmilk.util.units.angle.Angle;
-import dev.frozenmilk.util.units.angle.Angles;
+//
+//import dev.frozenmilk.util.units.angle.Angle;
+//import dev.frozenmilk.util.units.angle.Angles;
 
 public class Drive {
     private DcMotorEx flMotor, frMotor, blMotor, brMotor;
@@ -59,20 +59,20 @@ public class Drive {
         brMotor.setPower(brPower * MAX_SPEED);
     }
 
-    public void driveFieldCentric(double forward, double strafe, double rotate) {
-        //updateOdoHeading();
-        double r = Math.hypot(strafe, forward);
-
-        //Converts X, Y coordinates to polar coordinates
-        Angle bearing = Angles.relativeRad(Math.atan2(forward, strafe));
-        Angle heading = Angles.relativeRad(/*current heading, 0 for now*/0);
-        Angle theta = bearing.minus(heading);
-
-        //Converts values back to X, Y coordinates from polar
-        double newForward = r * Math.sin(theta.getValue());
-        double newStrafe = r * Math.cos(theta.getValue());
-
-        drive(newForward, newStrafe, rotate);
-    }
+//    public void driveFieldCentric(double forward, double strafe, double rotate) {
+//        //updateOdoHeading();
+//        double r = Math.hypot(strafe, forward);
+//
+//        //Converts X, Y coordinates to polar coordinates
+//        Angle bearing = Angles.relativeRad(Math.atan2(forward, strafe));
+//        Angle heading = Angles.relativeRad(/*current heading, 0 for now*/0);
+//        Angle theta = bearing.minus(heading);
+//
+//        //Converts values back to X, Y coordinates from polar
+//        double newForward = r * Math.sin(theta.getValue());
+//        double newStrafe = r * Math.cos(theta.getValue());
+//
+//        drive(newForward, newStrafe, rotate);
+//    }
 
 }

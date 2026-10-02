@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.firstinspires.ftc.teamcode.constants.Constants.HWNames.INTAKE;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake {
@@ -13,9 +11,9 @@ public class Intake {
         intake = hwMap.get(DcMotorEx.class, INTAKE);
 
         intake.setPower(0.0);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        intake.setDirection(DcMotorEx.Direction.REVERSE);
+        intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void on() {
