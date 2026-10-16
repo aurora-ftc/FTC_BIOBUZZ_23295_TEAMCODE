@@ -19,7 +19,11 @@ import java.util.regex.Pattern
 
 android {
 
+<<<<<<< HEAD
     compileSdk 34
+=======
+    compileSdkVersion 30
+>>>>>>> e14c2aeb33e84d4ea21697beeea9ac49557be870
 
     signingConfigs {
         release {
