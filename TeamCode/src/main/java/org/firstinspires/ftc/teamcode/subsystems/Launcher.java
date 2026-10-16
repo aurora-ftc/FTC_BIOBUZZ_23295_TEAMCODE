@@ -7,11 +7,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 public class Launcher {
+    private static final double TICKS_PER_REV = 7.0;
     private double power;
     private boolean on;
     MotorEx launcher;
     public void init(HardwareMap hwMap) {
-        launcher = new MotorEx(hwMap, LAUNCHER, 28, 5800);
+        launcher = new MotorEx(hwMap, LAUNCHER, TICKS_PER_REV, 5800);
 
         launcher.setRunMode(MotorEx.RunMode.VelocityControl);
         launcher.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.FLOAT);
@@ -39,12 +40,15 @@ public class Launcher {
     }
 
     public void setPower(double power) {
+        launcher.setVeloCoefficients(kP, kI, kD);
+        launcher.setFeedforwardCoefficients(kS, kV);
+
         this.power = power;
         if (on) launcher.set(this.power);
     }
 
     public int getRPM() {
-        return (int) (launcher.getCorrectedVelocity() * 60.0 / 28.0);
+        return (int) (launcher.getCorrectedVelocity() * 60.0 / TICKS_PER_REV);
     }
 
     public double getRate() {

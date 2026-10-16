@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.bylazar.configurables.PanelsConfigurables;
-import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -10,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
+import org.firstinspires.ftc.teamcode.constants.Constants;
 
 
 @TeleOp(name="TestOpMode", group="MainOps")
@@ -19,7 +19,7 @@ public class TestOpMode extends OpMode {
     private Launcher launcher;
     private boolean intakeOn;
     private double power;
-    TelemetryManager panelsTelemetry;
+    private TelemetryManager panelsTele;
 
     @Override
     public void init() {
@@ -35,10 +35,8 @@ public class TestOpMode extends OpMode {
         intake.init(hardwareMap);
         launcher.init(hardwareMap);
 
-        PanelsConfigurables.INSTANCE.refreshClass(TestOpMode.class);
-        telemetry = new JoinedTelemetry(telemetry, PanelsTelemetry.INSTANCE.getFtcTelemetry());
-
-        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+        PanelsConfigurables.INSTANCE.refreshClass(Constants.class);
+        panelsTele = PanelsTelemetry.INSTANCE.getTelemetry();
     }
 
     @Override
@@ -58,15 +56,15 @@ public class TestOpMode extends OpMode {
         double rotate = gamepad1.right_stick_x;
 
         if (gamepad1.crossWasPressed()) intakeOn = !intakeOn;
-        if (gamepad1.xWasPressed()) launcher.toggle();
+        if (gamepad1.triangleWasPressed()) launcher.toggle();
 
         drive.drive(forward, strafe, rotate);
 
         if (intakeOn) intake.on();
         else intake.off();
 
-        if (gamepad1.dpadDownWasPressed() && power > 0.01) power -= 0.01;
-        else if (gamepad1.dpadUpWasPressed() && power < 0.99) power += 0.01;
+        if (gamepad1.dpadDownWasPressed() && power >= 0.01) power -= 0.01;
+        else if (gamepad1.dpadUpWasPressed() && power <= 0.99) power += 0.01;
         launcher.setPower(power);
 
         telemetry.addData("Power", power);
@@ -74,12 +72,10 @@ public class TestOpMode extends OpMode {
         telemetry.addData("Rate", launcher.getRate());
 
         double[] dataPID = launcher.getGraphData();
-        panelsTelemetry.addData("target", dataPID[0]);
-        panelsTelemetry.addData("current", dataPID[1]);
-        panelsTelemetry.addData("power", dataPID[2]);
-
-        panelsTelemetry.update();
-        telemetry.update();
+        panelsTele.addData("target RPM", dataPID[0]);
+        panelsTele.addData("current", dataPID[1]);
+        panelsTele.addData("motor power", dataPID[2]);
+        panelsTele.update(telemetry);
     }
 
     @Override

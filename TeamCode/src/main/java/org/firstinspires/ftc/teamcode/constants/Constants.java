@@ -24,11 +24,12 @@ public class Constants {
     public static class PID {
         @Configurable
         public static class Launcher {
-            public static double kP = 0.5;
+            // MotorEx PID works in ticks/second; feedforward outputs a motor power fraction.
+            public static double kP = 0.0015;
             public static double kI = 0.0;
             public static double kD = 0.0;
             public static double kS = 0.0;
-            public static double kV = 0.0;
+            public static double kV = 60.0 / (7.0 * 5800.0);
         }
     }
 }
