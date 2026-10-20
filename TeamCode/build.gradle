@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 buildscript {
     repositories {
         mavenCentral()
@@ -18,9 +17,7 @@ buildscript {
 apply plugin: 'com.android.application'
 // there should be 2 or 3 more lines that start with 'apply plugin:' here
 apply plugin: 'dev.frozenmilk.sinister.sloth.load'
-=======
 apply plugin: 'com.android.application'
->>>>>>> e14c2aeb33e84d4ea21697beeea9ac49557be870
 
 //
 // build.gradle in TeamCode
@@ -41,20 +38,16 @@ apply from: '../build.dependencies.gradle'
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
-<<<<<<< HEAD
     compileSdk 35
     defaultConfig {
         minSdk 24
     }
 
-=======
->>>>>>> e14c2aeb33e84d4ea21697beeea9ac49557be870
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
 }
 
-<<<<<<< HEAD
 repositories {
     // Dairy releases repository
     maven {
@@ -88,8 +81,8 @@ repositories {
     }
 }
 
-=======
+
 dependencies {
     implementation project(':FtcRobotController')
 }
->>>>>>> e14c2aeb33e84d4ea21697beeea9ac49557be870
+

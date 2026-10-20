@@ -1,6 +1,5 @@
 repositories {
     mavenCentral()
-<<<<<<< HEAD
     maven {
         url "https://repo.dairy.foundation/releases"
     }
@@ -9,13 +8,10 @@ repositories {
         url = "https://mymaven.bylazar.com/releases"
     }
     maven { url 'https://repo.dairy.foundation/releases/'}
-=======
->>>>>>> e14c2aeb33e84d4ea21697beeea9ac49557be870
     google() // Needed for androidx
 }
 
 dependencies {
-<<<<<<< HEAD
     implementation 'org.firstinspires.ftc:Inspection:11.2.1'
     implementation 'org.firstinspires.ftc:Blocks:11.2.1'
     //noinspection Aligned16KB
@@ -34,16 +30,13 @@ dependencies {
     //Pasteurized
     implementation("dev.frozenmilk.dairy:Pasteurized:1.0.0")
 }
-=======
-    implementation 'org.firstinspires.ftc:Inspection:12.0.0'
-    implementation 'org.firstinspires.ftc:Blocks:12.0.0'
-    implementation 'org.firstinspires.ftc:RobotCore:12.0.0'
-    implementation 'org.firstinspires.ftc:RobotServer:12.0.0'
-    implementation 'org.firstinspires.ftc:OnBotJava:12.0.0'
-    implementation 'org.firstinspires.ftc:Hardware:12.0.0'
-    implementation 'org.firstinspires.ftc:FtcCommon:12.0.0'
-    implementation 'org.firstinspires.ftc:Vision:12.0.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-}
+//    implementation 'org.firstinspires.ftc:Inspection:12.0.0'
+//    implementation 'org.firstinspires.ftc:Blocks:12.0.0'
+//    implementation 'org.firstinspires.ftc:RobotCore:12.0.0'
+//    implementation 'org.firstinspires.ftc:RobotServer:12.0.0'
+//    implementation 'org.firstinspires.ftc:OnBotJava:12.0.0'
+//    implementation 'org.firstinspires.ftc:Hardware:12.0.0'
+//    implementation 'org.firstinspires.ftc:FtcCommon:12.0.0'
+//    implementation 'org.firstinspires.ftc:Vision:12.0.0'
+//    implementation 'androidx.appcompat:appcompat:1.2.0'
 
->>>>>>> e14c2aeb33e84d4ea21697beeea9ac49557be870
