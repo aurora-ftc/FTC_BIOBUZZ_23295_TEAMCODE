@@ -58,7 +58,7 @@ public class Launcher {
     public double[] getGraphData() {
         double target = on ? power * 5800 : 0;
         double current = getRPM();
-        double power = launcher.getRawPower();
+        double power = getRPM() / 5800.0;
         return new double[] {target, current, power};
     }
 }

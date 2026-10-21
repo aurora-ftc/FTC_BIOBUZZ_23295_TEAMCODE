@@ -66,13 +66,7 @@ dependencies {
 
     implementation("dev.frozenmilk.sinister:Sloth:0.3.1")
 
-    implementation "com.bylazar:fullpanels:1.0.18"
-    implementation "com.bylazar:panels:1.0.7"
-//    implementation "com.bylazar:fullpanels:1.0.5"
-//    implementation "com.bylazar:docs:1.0.9"
-//    implementation "com.bylazar:graph:1.0.6"
-//    implementation "com.bylazar:configurables:1.0.7"
-
+    implementation "com.bylazar:fullpanels:1.0.19"
 }
 
 repositories {

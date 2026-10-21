@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.bylazar.configurables.PanelsConfigurables;
+//import com.bylazar.graph.GraphManager;
+//import com.bylazar.graph.PanelsGraph;
+import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -19,8 +23,9 @@ public class TestOpMode extends OpMode {
     private Launcher launcher;
     private boolean intakeOn;
     private double power;
-    private TelemetryManager panelsTele;
-
+//    private GraphManager graphManager;
+    private TelemetryManager panelsTelemetry;
+    private ElapsedTime matchTimer = new ElapsedTime();
     @Override
     public void init() {
         drive = new Drive();
@@ -35,8 +40,11 @@ public class TestOpMode extends OpMode {
         intake.init(hardwareMap);
         launcher.init(hardwareMap);
 
-        PanelsConfigurables.INSTANCE.refreshClass(Constants.class);
-        panelsTele = PanelsTelemetry.INSTANCE.getTelemetry();
+        PanelsConfigurables.INSTANCE.refreshClass(TestOpMode.class);
+        telemetry = new JoinedTelemetry(telemetry, PanelsTelemetry.INSTANCE.getFtcTelemetry());
+
+        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+//        graphManager = PanelsGraph.INSTANCE.getManager();
     }
 
     @Override
@@ -47,6 +55,7 @@ public class TestOpMode extends OpMode {
     @Override
     public void start() {
         super.start();
+        matchTimer.reset();
     }
 
     @Override
@@ -67,15 +76,27 @@ public class TestOpMode extends OpMode {
         else if (gamepad1.dpadUpWasPressed() && power <= 0.99) power += 0.01;
         launcher.setPower(power);
 
-        telemetry.addData("Power", power);
-        telemetry.addData("RPM", launcher.getRPM());
-        telemetry.addData("Rate", launcher.getRate());
-
         double[] dataPID = launcher.getGraphData();
-        panelsTele.addData("target RPM", dataPID[0]);
-        panelsTele.addData("current", dataPID[1]);
-        panelsTele.addData("motor power", dataPID[2]);
-        panelsTele.update(telemetry);
+        telemetry.addData("Power", power);
+        telemetry.addData("RPM", launcher.getRPM());//telemetry.addData("Last Update", graphManager.getTimeSinceLastUpdate());
+
+        panelsTelemetry.debug("Target", dataPID[0]);
+        panelsTelemetry.debug("Current", dataPID[1]);
+        panelsTelemetry.debug("Power", dataPID[2]);
+
+        panelsTelemetry.addData("Target", dataPID[0]);
+        panelsTelemetry.addData("Current", dataPID[1]);
+        panelsTelemetry.addData("Power", dataPID[2]);
+
+//        graphManager.addData("Target", dataPID[0]);
+//        graphManager.addData("Current", dataPID[1]);
+//        graphManager.addData("Power", dataPID[2]);
+
+        panelsTelemetry.addLine("extra1:" + matchTimer.seconds());
+
+        panelsTelemetry.update();
+//        graphManager.update();
+        telemetry.update();
     }
 
     @Override
