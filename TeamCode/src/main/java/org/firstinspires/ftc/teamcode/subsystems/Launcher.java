@@ -1,22 +1,31 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.constants.Constants.HWNames.LAUNCHER;
-import static org.firstinspires.ftc.teamcode.constants.Constants.PID.Launcher.*;
+import static org.firstinspires.ftc.teamcode.constants.Constants.HWNames.LAUNCHER_NECTAR;
+import static org.firstinspires.ftc.teamcode.constants.Constants.PID.NectarLauncher.*;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 public class Launcher {
-    private static final double TICKS_PER_REV = 7.0;
+    private static final double TICKS_PER_REV = 28.0;
     private double power;
-    private boolean on;
-    MotorEx launcher;
+    private int ticksPerRev, rpm;
+    private boolean reverse, on;
+    private String motorName;
+    private MotorEx launcher;
+
+    public Launcher(String motorName, int ticksPerRev, int rpm, boolean reverse) {
+        this.motorName = motorName;
+        this.ticksPerRev = ticksPerRev;
+        this.rpm = rpm;
+    }
+
     public void init(HardwareMap hwMap) {
-        launcher = new MotorEx(hwMap, LAUNCHER, TICKS_PER_REV, 5800);
+        launcher = new MotorEx(hwMap, motorName, ticksPerRev, rpm);
 
         launcher.setRunMode(MotorEx.RunMode.VelocityControl);
         launcher.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.FLOAT);
-        launcher.setInverted(true);
+        launcher.setInverted(reverse);
         launcher.stopAndResetEncoder();
         launcher.set(0);
 
@@ -26,11 +35,13 @@ public class Launcher {
 
     public void on() {
         on = true;
+        launcher.setRunMode(MotorEx.RunMode.VelocityControl);
         launcher.set(power);
     }
 
     public void off() {
         on = false;
+        launcher.setRunMode(MotorEx.RunMode.RawPower);
         launcher.set(0);
     }
 
@@ -44,6 +55,8 @@ public class Launcher {
         launcher.setFeedforwardCoefficients(kS, kV);
 
         this.power = power;
+        if (motorName.equals(LAUNCHER_NECTAR))
+            this.power = -power;
         if (on) launcher.set(this.power);
     }
 
@@ -56,9 +69,9 @@ public class Launcher {
     }
 
     public double[] getGraphData() {
-        double target = on ? power * 5800 : 0;
+        double target = on ? power * 5000 : 0;
         double current = getRPM();
-        double power = getRPM() / 5800.0;
+        double power = launcher.getRawPower();
         return new double[] {target, current, power};
     }
 }

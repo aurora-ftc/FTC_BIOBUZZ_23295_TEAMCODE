@@ -3,18 +3,22 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import static org.firstinspires.ftc.teamcode.constants.Constants.HWNames.*;
 import static org.firstinspires.ftc.teamcode.constants.Constants.MAX_SPEED;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.util.DcMotorGroup;
 
+import com.pedropathing.utils.Angle;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-//
-//import dev.frozenmilk.util.units.angle.Angle;
-//import dev.frozenmilk.util.units.angle.Angles;
+
+import java.util.Locale;
 
 public class Drive {
     private DcMotorEx flMotor, frMotor, blMotor, brMotor;
     private DcMotorGroup driveMotors;
-    // private GoBildaPinpointDriver.GoBildaOdometryPods odo;
+    private GoBildaPinpointDriver odo;
 
     public void init(HardwareMap hwMap) {
         flMotor = hwMap.get(DcMotorEx.class, FL_MOTOR);
@@ -22,7 +26,14 @@ public class Drive {
         blMotor = hwMap.get(DcMotorEx.class, BL_MOTOR);
         brMotor = hwMap.get(DcMotorEx.class, BR_MOTOR);
 
-        // odo = hwMap.get(GoBildaPinpointDriver.GoBildaOdometryPods.class )
+        odo = hwMap.get(GoBildaPinpointDriver.class, ODO);
+
+        odo.setOffsets(1, -3, DistanceUnit.INCH);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.resetPosAndIMU();
+        odo.setHeading(0, AngleUnit.RADIANS);
 
         driveMotors = new DcMotorGroup(flMotor, frMotor, blMotor, brMotor);
 
@@ -59,20 +70,21 @@ public class Drive {
         brMotor.setPower(brPower * MAX_SPEED);
     }
 
-//    public void driveFieldCentric(double forward, double strafe, double rotate) {
-//        //updateOdoHeading();
-//        double r = Math.hypot(strafe, forward);
-//
-//        //Converts X, Y coordinates to polar coordinates
-//        Angle bearing = Angles.relativeRad(Math.atan2(forward, strafe));
-//        Angle heading = Angles.relativeRad(/*current heading, 0 for now*/0);
-//        Angle theta = bearing.minus(heading);
-//
-//        //Converts values back to X, Y coordinates from polar
-//        double newForward = r * Math.sin(theta.getValue());
-//        double newStrafe = r * Math.cos(theta.getValue());
-//
-//        drive(newForward, newStrafe, rotate);
-//    }
+    public void driveFieldCentric(double forward, double strafe, double rotate) {
+        odo.update();
+
+        double theta = Math.atan2(forward, strafe);
+        double r = Math.hypot(strafe, forward);
+
+        //Recalculates heading based on current position
+        double heading = odo.getHeading(AngleUnit.RADIANS);
+        theta = AngleUnit.normalizeRadians(theta - heading);
+
+        //Converts values back to X, Y coordinates from polar
+        double newForward = r * Math.sin(theta);
+        double newStrafe = r * Math.cos(theta);
+
+        this.drive(newForward, newStrafe, rotate);
+    }
 
 }

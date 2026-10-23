@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static org.firstinspires.ftc.teamcode.constants.Constants.HWNames.LAUNCHER_POLLEN;
+import static org.firstinspires.ftc.teamcode.constants.Constants.HWNames.LAUNCHER_NECTAR;
+
 import com.bylazar.configurables.PanelsConfigurables;
-//import com.bylazar.graph.GraphManager;
-//import com.bylazar.graph.PanelsGraph;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -13,38 +14,32 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
-import org.firstinspires.ftc.teamcode.constants.Constants;
 
 
 @TeleOp(name="TestOpMode", group="MainOps")
 public class TestOpMode extends OpMode {
-    private Drive drive;
-    private Intake intake;
-    private Launcher launcher;
+    private Drive drive = new Drive();
+    private Intake intake = new Intake();
+    private Launcher nectarLauncher = new Launcher(LAUNCHER_NECTAR, 28, 5000, false);
+    private Launcher pollenLauncher = new Launcher(LAUNCHER_POLLEN, 28, 5000, false);
     private boolean intakeOn;
     private double power;
-//    private GraphManager graphManager;
     private TelemetryManager panelsTelemetry;
     private ElapsedTime matchTimer = new ElapsedTime();
     @Override
     public void init() {
-        drive = new Drive();
-        intake = new Intake();
-        launcher = new Launcher();
-
         intakeOn = false;
-
-        power = 0.5;
+        power = 0.8;
 
         drive.init(hardwareMap);
         intake.init(hardwareMap);
-        launcher.init(hardwareMap);
+        nectarLauncher.init(hardwareMap);
+        pollenLauncher.init(hardwareMap);
 
         PanelsConfigurables.INSTANCE.refreshClass(TestOpMode.class);
         telemetry = new JoinedTelemetry(telemetry, PanelsTelemetry.INSTANCE.getFtcTelemetry());
 
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-//        graphManager = PanelsGraph.INSTANCE.getManager();
     }
 
     @Override
@@ -60,48 +55,58 @@ public class TestOpMode extends OpMode {
 
     @Override
     public void loop() {
-        double forward = gamepad1.left_stick_y;
+        double forward = -gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x;
         double rotate = gamepad1.right_stick_x;
 
         if (gamepad1.crossWasPressed()) intakeOn = !intakeOn;
-        if (gamepad1.triangleWasPressed()) launcher.toggle();
+        if (gamepad1.triangleWasPressed()) nectarLauncher.toggle();
+        if (gamepad1.squareWasPressed()) pollenLauncher.toggle();
 
-        drive.drive(forward, strafe, rotate);
+        drive.driveFieldCentric(forward, strafe, rotate);
 
         if (intakeOn) intake.on();
         else intake.off();
 
         if (gamepad1.dpadDownWasPressed() && power >= 0.01) power -= 0.01;
-        else if (gamepad1.dpadUpWasPressed() && power <= 0.99) power += 0.01;
-        launcher.setPower(power);
+        else if (gamepad1.dpadUpWasPressed() && power <= 1.00) power += 0.01;
+        nectarLauncher.setPower(power);
+        pollenLauncher.setPower(power);
 
-        double[] dataPID = launcher.getGraphData();
-        telemetry.addData("Power", power);
-        telemetry.addData("RPM", launcher.getRPM());//telemetry.addData("Last Update", graphManager.getTimeSinceLastUpdate());
-
-        panelsTelemetry.debug("Target", dataPID[0]);
-        panelsTelemetry.debug("Current", dataPID[1]);
-        panelsTelemetry.debug("Power", dataPID[2]);
-
-        panelsTelemetry.addData("Target", dataPID[0]);
-        panelsTelemetry.addData("Current", dataPID[1]);
-        panelsTelemetry.addData("Power", dataPID[2]);
-
-//        graphManager.addData("Target", dataPID[0]);
-//        graphManager.addData("Current", dataPID[1]);
-//        graphManager.addData("Power", dataPID[2]);
-
-        panelsTelemetry.addLine("extra1:" + matchTimer.seconds());
-
-        panelsTelemetry.update();
-//        graphManager.update();
-        telemetry.update();
+        this.tele();
     }
 
     @Override
     public void stop() {
         super.stop();
+    }
+
+    private void tele() {
+        double[] dataNectar = nectarLauncher.getGraphData();
+        double[] dataPollen = pollenLauncher.getGraphData();
+
+        telemetry.addData("General Power", power);
+
+        telemetry.addLine("------NECTAR-----");
+        telemetry.addData("Target", dataNectar[0]);
+        telemetry.addData("Current", dataNectar[1]);
+        telemetry.addData("Power", dataNectar[2]);
+
+        telemetry.addLine("------POLLEN-----");
+        telemetry.addData("Target", dataPollen[0]);
+        telemetry.addData("Current", dataPollen[1]);
+        telemetry.addData("Power", dataPollen[2]);
+
+//        panelsTelemetry.debug("Target", dataNectar[0]);
+//        panelsTelemetry.debug("Current", dataNectar[1]);
+//        panelsTelemetry.debug("Power", dataNectar[2]);
+//
+//        panelsTelemetry.addData("Target", dataNectar[0]);
+//        panelsTelemetry.addData("Current", dataNectar[1]);
+//        panelsTelemetry.addData("Power", dataNectar[2]);
+
+        panelsTelemetry.update();
+        telemetry.update();
     }
 
 }

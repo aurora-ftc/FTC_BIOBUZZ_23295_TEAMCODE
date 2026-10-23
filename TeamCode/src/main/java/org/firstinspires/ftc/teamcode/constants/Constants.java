@@ -17,13 +17,23 @@ public class Constants {
         public static final String BR_MOTOR = "back_right";
         public static final String ODO = "odo";
         public static final String INTAKE = "intake";
-        public static final String LAUNCHER = "launcher";
+        public static final String LAUNCHER_POLLEN = "launcher_pollen";
+        public static final String LAUNCHER_NECTAR = "launcher_nectar";
+
     }
 
     @Configurable
     public static class PID {
         @Configurable
-        public static class Launcher {
+        public static class NectarLauncher {
+            public static double kP = 1.3;
+            public static double kI = 0.0;
+            public static double kD = 0.2;
+            public static double kS = 0.08;
+            public static double kV = 1.23;
+        }
+        @Configurable
+        public static class PollenLauncher {
             public static double kP = 0.0;
             public static double kI = 0.0;
             public static double kD = 0.0;
