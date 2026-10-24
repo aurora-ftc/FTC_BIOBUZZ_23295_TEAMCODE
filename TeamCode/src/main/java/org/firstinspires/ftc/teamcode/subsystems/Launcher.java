@@ -1,22 +1,22 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.constants.Constants.HWNames.LAUNCHER_NECTAR;
 import static org.firstinspires.ftc.teamcode.constants.Constants.PID.NectarLauncher.*;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
+import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
 public class Launcher {
     private static final double TICKS_PER_REV = 28.0;
     private double power;
     private int ticksPerRev, rpm;
-    private boolean reverse, on;
+    private boolean isReversed, on;
     private String motorName;
     private MotorEx launcher;
-
     public Launcher(String motorName, int ticksPerRev, int rpm, boolean reverse) {
         this.motorName = motorName;
         this.ticksPerRev = ticksPerRev;
+        this.isReversed = reverse;
         this.rpm = rpm;
     }
 
@@ -25,7 +25,7 @@ public class Launcher {
 
         launcher.setRunMode(MotorEx.RunMode.VelocityControl);
         launcher.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.FLOAT);
-        launcher.setInverted(reverse);
+        launcher.setInverted(isReversed);
         launcher.stopAndResetEncoder();
         launcher.set(0);
 
@@ -55,8 +55,6 @@ public class Launcher {
         launcher.setFeedforwardCoefficients(kS, kV);
 
         this.power = power;
-        if (motorName.equals(LAUNCHER_NECTAR))
-            this.power = -power;
         if (on) launcher.set(this.power);
     }
 
@@ -71,7 +69,7 @@ public class Launcher {
     public double[] getGraphData() {
         double target = on ? power * 5000 : 0;
         double current = getRPM();
-        double power = launcher.getRawPower();
+        double power = getRate();//launcher.getRawPower()
         return new double[] {target, current, power};
     }
 }

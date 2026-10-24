@@ -19,7 +19,8 @@ public class Constants {
         public static final String INTAKE = "intake";
         public static final String LAUNCHER_POLLEN = "launcher_pollen";
         public static final String LAUNCHER_NECTAR = "launcher_nectar";
-
+        public static final String LIFT_SERVO = "diddy_servo";
+        public static final String WALL_SERVO = "wall_servo";
     }
 
     @Configurable

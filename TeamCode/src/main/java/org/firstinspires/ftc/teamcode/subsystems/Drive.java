@@ -8,12 +8,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.util.DcMotorGroup;
 
-import com.pedropathing.utils.Angle;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import java.util.Locale;
 
 public class Drive {
     private DcMotorEx flMotor, frMotor, blMotor, brMotor;
@@ -28,7 +25,7 @@ public class Drive {
 
         odo = hwMap.get(GoBildaPinpointDriver.class, ODO);
 
-        odo.setOffsets(1, -3, DistanceUnit.INCH);
+        odo.setOffsets(2, -4.2, DistanceUnit.INCH);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD);
@@ -85,6 +82,18 @@ public class Drive {
         double newStrafe = r * Math.cos(theta);
 
         this.drive(newForward, newStrafe, rotate);
+    }
+
+    public void resetOdo() {
+        odo.setHeading(0, AngleUnit.DEGREES);
+    }
+
+    public double[] getData() {
+        return new double[] {
+                odo.getPosX(DistanceUnit.INCH),
+                odo.getPosY(DistanceUnit.INCH),
+                odo.getHeading(AngleUnit.DEGREES)
+            };
     }
 
 }

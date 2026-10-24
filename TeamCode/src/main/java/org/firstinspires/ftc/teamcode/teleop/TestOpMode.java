@@ -14,13 +14,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
+import org.firstinspires.ftc.teamcode.subsystems.Wall;
 
 
 @TeleOp(name="TestOpMode", group="MainOps")
 public class TestOpMode extends OpMode {
     private Drive drive = new Drive();
     private Intake intake = new Intake();
-    private Launcher nectarLauncher = new Launcher(LAUNCHER_NECTAR, 28, 5000, false);
+    private Wall wall = new Wall();
+    private Launcher nectarLauncher = new Launcher(LAUNCHER_NECTAR, 28, 5000, true);
     private Launcher pollenLauncher = new Launcher(LAUNCHER_POLLEN, 28, 5000, false);
     private boolean intakeOn;
     private double power;
@@ -29,10 +31,11 @@ public class TestOpMode extends OpMode {
     @Override
     public void init() {
         intakeOn = false;
-        power = 0.8;
+        power = 0.72;
 
         drive.init(hardwareMap);
         intake.init(hardwareMap);
+        wall.init(hardwareMap);
         nectarLauncher.init(hardwareMap);
         pollenLauncher.init(hardwareMap);
 
@@ -59,13 +62,26 @@ public class TestOpMode extends OpMode {
         double strafe = gamepad1.left_stick_x;
         double rotate = gamepad1.right_stick_x;
 
-        if (gamepad1.crossWasPressed()) intakeOn = !intakeOn;
-        if (gamepad1.triangleWasPressed()) nectarLauncher.toggle();
-        if (gamepad1.squareWasPressed()) pollenLauncher.toggle();
-
         drive.driveFieldCentric(forward, strafe, rotate);
 
-        if (intakeOn) intake.on();
+        if (gamepad1.squareWasPressed()) intakeOn = !intakeOn;
+
+        if (gamepad1.triangleWasPressed()) nectarLauncher.toggle();
+        if (gamepad1.circleWasPressed()) pollenLauncher.toggle();
+
+        if (gamepad1.touchpadWasPressed()) drive.resetOdo();
+
+        if (gamepad1.left_bumper) intake.down();
+        else if (gamepad1.right_bumper) intake.up();
+        else intake.stop();
+
+        if (gamepad1.crossWasPressed()) wall.toggle();
+        wall.periodic();
+
+        if (gamepad1.rightTriggerWasPressed()) intake.blip();
+
+        if (intake.blipTimer.seconds() <= 0.1) intake.reverse();
+        else if (intakeOn || wall.wallTimer.seconds() < 2) intake.on();
         else intake.off();
 
         if (gamepad1.dpadDownWasPressed() && power >= 0.01) power -= 0.01;
@@ -73,7 +89,7 @@ public class TestOpMode extends OpMode {
         nectarLauncher.setPower(power);
         pollenLauncher.setPower(power);
 
-        this.tele();
+        tele();
     }
 
     @Override
@@ -84,18 +100,26 @@ public class TestOpMode extends OpMode {
     private void tele() {
         double[] dataNectar = nectarLauncher.getGraphData();
         double[] dataPollen = pollenLauncher.getGraphData();
+        double[] dataPos = drive.getData();
 
         telemetry.addData("General Power", power);
+        telemetry.addData("Wall Pos", wall.getData()? "IN" : "OUT");
 
-        telemetry.addLine("------NECTAR-----");
-        telemetry.addData("Target", dataNectar[0]);
-        telemetry.addData("Current", dataNectar[1]);
-        telemetry.addData("Power", dataNectar[2]);
+        telemetry.addLine("------NECTAR_LAUNCHER------");
+        telemetry.addData("Target_N", dataNectar[0]);
+        telemetry.addData("Current_N", dataNectar[1]);
+        telemetry.addData("Power_N", dataNectar[2]);
 
-        telemetry.addLine("------POLLEN-----");
-        telemetry.addData("Target", dataPollen[0]);
-        telemetry.addData("Current", dataPollen[1]);
-        telemetry.addData("Power", dataPollen[2]);
+        telemetry.addLine("------POLLEN_LAUNCHER------");
+        telemetry.addData("Target_P", dataPollen[0]);
+        telemetry.addData("Current_P", dataPollen[1]);
+        telemetry.addData("Power_P", dataPollen[2]);
+
+        telemetry.addLine("------POSITION------");
+        telemetry.addData("Y (in)", dataPos[0]);
+        telemetry.addData("X (in)", dataPos[1]);
+        telemetry.addData("Heading (deg)", dataPos[2]);
+
 
 //        panelsTelemetry.debug("Target", dataNectar[0]);
 //        panelsTelemetry.debug("Current", dataNectar[1]);
