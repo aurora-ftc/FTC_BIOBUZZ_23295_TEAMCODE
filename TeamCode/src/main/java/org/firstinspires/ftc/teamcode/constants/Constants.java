@@ -27,11 +27,11 @@ public class Constants {
     public static class PID {
         @Configurable
         public static class NectarLauncher {
-            public static double kP = 1.3;
+            public static double kP = 5.0;
             public static double kI = 0.0;
-            public static double kD = 0.2;
+            public static double kD = 0.3;
             public static double kS = 0.08;
-            public static double kV = 1.23;
+            public static double kV = 2.93;
         }
         @Configurable
         public static class PollenLauncher {
